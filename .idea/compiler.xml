@@ -10,7 +10,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
       </profile>
-      <profile name="Annotation profile for mssc-beer-service" enabled="true">
+      <profile name="Annotation profile for my-beer-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -30,16 +30,17 @@
           <entry name="$MAVEN_REPOSITORY$/joda-time/joda-time/2.9/joda-time-2.9.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
         </processorPath>
-        <module name="mssc-beer-service" />
+        <module name="my-beer-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="my-beer-service" target="1.5" />
+      <module name="mssc-beer-service" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="mssc-beer-service" options="-parameters -Amapstruct.defaultComponentModel=spring" />
+      <module name="my-beer-service" options="-parameters -Amapstruct.defaultComponentModel=spring" />
     </option>
   </component>
 </project>
