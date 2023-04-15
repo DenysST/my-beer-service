@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Created by jt on 2019-06-09.
  */
-
 @Configuration
 public class CacheConfig {
 }

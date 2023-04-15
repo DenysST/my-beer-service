@@ -29,7 +29,7 @@ public class BeerServiceImpl implements BeerService {
     @Cacheable(cacheNames = "beerListCache", condition = "#showInventoryOnHand == false ")
     @Override
     public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand) {
-        System.out.println("list beers");
+
         BeerPagedList beerPagedList;
         Page<Beer> beerPage;
 
@@ -74,7 +74,6 @@ public class BeerServiceImpl implements BeerService {
     @Cacheable(cacheNames = "beerCache", key = "#beerId", condition = "#showInventoryOnHand == false ")
     @Override
     public BeerDto getById(UUID beerId, Boolean showInventoryOnHand) {
-        System.out.println("by id");
         if (showInventoryOnHand) {
             return beerMapper.beerToBeerDtoWithInventory(
                     beerRepository.findById(beerId).orElseThrow(NotFoundException::new)
@@ -101,5 +100,11 @@ public class BeerServiceImpl implements BeerService {
         beer.setUpc(beerDto.getUpc());
 
         return beerMapper.beerToBeerDto(beerRepository.save(beer));
+    }
+
+    @Cacheable(cacheNames = "beerUpcCache")
+    @Override
+    public BeerDto getByUpc(String upc) {
+        return beerMapper.beerToBeerDto(beerRepository.findByUpc(upc));
     }
 }
