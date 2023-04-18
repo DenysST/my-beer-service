@@ -1,0 +1,11 @@
+version: '2'
+services:
+  artemis:
+    image: quay.io/artemiscloud/activemq-artemis-broker
+    ports:
+      - "8161:8161"
+      - "61616:61616"
+    environment:
+      AMQ_EXTRA_ARGS: "--nio --host 0.0.0.0 --http-host 0.0.0.0 --relax-jolokia"
+      AMQ_USER: "admin"
+      AMQ_PASSWORD: "admin"
