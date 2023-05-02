@@ -1,5 +1,16 @@
-version: '2'
+version: '3.8'
 services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-brewery
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./src/main/scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
   artemis:
     image: quay.io/artemiscloud/activemq-artemis-broker
     ports:
@@ -9,3 +20,67 @@ services:
       AMQ_EXTRA_ARGS: "--nio --host 0.0.0.0 --http-host 0.0.0.0 --relax-jolokia"
       AMQ_USER: "admin"
       AMQ_PASSWORD: "admin"
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+  eureka:
+    build: ../my-eureka
+    ports:
+      - "8761:8761"
+
+  config:
+    build: ../my-config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - eureka
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+
+  inventory-service:
+    build: ../my-inventory-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka
+      - artemis
+      - config
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: localmysql, local-discovery
+      SPRING_ZIPKIN_BASEURL: http://zipkin
+      SPRING_ARTEMIS_HOST: artemis
+      DATABASE_HOST: mysql
+
+  order-service:
+    build: ../my-order-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka
+      - artemis
+      - config
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: local-discovery, localmysql
+      SPRING_ZIPKIN_BASEURL: http://zipkin
+      SPRING_ARTEMIS_HOST: artemis
+      DATABASE_HOST: mysql
+
+  beer-service:
+    build: ../my-beer-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka
+      - artemis
+      - config
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: local-discovery, localmysql
+      SPRING_ZIPKIN_BASEURL: http://zipkin
+      SPRING_ARTEMIS_HOST: artemis
+      DATABASE_HOST: mysql
