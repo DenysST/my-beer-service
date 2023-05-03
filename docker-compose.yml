@@ -9,7 +9,7 @@ services:
       - "3306:3306"
     volumes:
       - ./src/main/scripts/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
-    restart: unless-stopped
+    restart: on-failure
 
   artemis:
     image: quay.io/artemiscloud/activemq-artemis-broker
@@ -20,16 +20,19 @@ services:
       AMQ_EXTRA_ARGS: "--nio --host 0.0.0.0 --http-host 0.0.0.0 --relax-jolokia"
       AMQ_USER: "admin"
       AMQ_PASSWORD: "admin"
+    restart: on-failure
 
   zipkin:
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
+    restart: on-failure
 
   eureka:
     build: ../my-eureka
     ports:
       - "8761:8761"
+    restart: on-failure
 
   config-server:
     build: ../my-config-server
@@ -39,6 +42,7 @@ services:
       - eureka
     environment:
       eureka.client.serviceUrl.defaultZone: http://eureka:8761/eureka
+    restart: on-failure
 
   inventory-service:
     build: ../my-inventory-service
@@ -56,6 +60,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin
       SPRING_ARTEMIS_HOST: artemis
       DATABASE_HOST: mysql
+    restart: on-failure
 
 
   order-service:
@@ -74,6 +79,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin
       SPRING_ARTEMIS_HOST: artemis
       DATABASE_HOST: mysql
+    restart: on-failure
 
   beer-service:
     build: ../my-beer-service
@@ -91,6 +97,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin
       SPRING_ARTEMIS_HOST: artemis
       DATABASE_HOST: mysql
+    restart: on-failure
 
   api-gateway:
     build: ../my-gateway
@@ -107,3 +114,4 @@ services:
     environment:
       eureka.client.serviceUrl.defaultZone: http://eureka:8761/eureka
       SPRING_PROFILES_ACTIVE: local-discovery
+    restart: on-failure
