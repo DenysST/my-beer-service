@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-/**
- * Created by jt on 12/2/19.
- */
+
 @RequiredArgsConstructor
 @Component
 public class BeerOrderValidationListener {

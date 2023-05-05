@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Created by jt on 3/7/20.
- */
+
 @Slf4j
 @RequiredArgsConstructor
 @Profile("local-discovery")
